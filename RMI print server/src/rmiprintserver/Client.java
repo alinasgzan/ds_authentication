@@ -6,27 +6,50 @@ import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class Client {
-	private static PrintService service;
+
+    private static IPrintServer service;
+
 	    public static void main(String[] args) throws RemoteException, NotBoundException, MalformedURLException {
-	        
-	        service = (PrintService) Naming.lookup("rmi://localhost:5099/printserver");
-	        
+
+	        service = (IPrintServer) Naming.lookup("rmi://localhost:5099/printserver");
+	        //Using standard JWT tokens
+			var token = "";
+
 	        Scanner sc = new Scanner(System.in);
-	        String command;
+	        String command = "";
 	        System.out.println("enter print command.. ");
+
 	        while(true) {
-	            command = sc.nextLine();
-	            if(command.equals("close")) {
-	                 System.out.println("goodbye..");
-	                break;
-	            }
-	            String response = handle(command);
-	                System.out.println(response);
-	        }
+	        	if (token != "" && service.checkSessionValidity(token)) {
+					//Handle logged state with valid token
+
+					command = sc.nextLine();
+					if(command.equals("close")) {
+						System.out.println("goodbye..");
+						break;
+					}
+					String response = handleInput(command);
+					System.out.println(response);
+				}
+				else {
+				    try {
+
+                        token = handleAuthentification(command);
+                    } catch (RemoteException e) {
+				        token = "";
+                    }
+					//Handle invalid/unlogged state
+				}
+			}
 	        sc.close();
 	    }
 
-	    private static String handle(String input) {
+	/**
+	 *
+	 * @param input
+	 * @return
+	 */
+	    private static String handleInput(String input) {
 	        String[] commands = input.split("\\s+");
 	        try {
 	            switch (commands[0]) {
@@ -68,6 +91,25 @@ public class Client {
 
 	        return "No such command: " + input;
 	    }
+
+        private static String handleAuthentification(String input) throws RemoteException {
+            String[] commands = input.split("\\s+");
+
+            //User input
+            var  username = commands[0];
+            var password = commands[1];
+
+            //Server params
+            var serverPublicKey = service.getPublicKey();
+
+
+            return service.login(username, encryptPassword(password, serverPublicKey));
+        }
+
+        private static String encryptPassword(String password, String publicKey) {
+
+	        return "";
+        }
 
 }
 
