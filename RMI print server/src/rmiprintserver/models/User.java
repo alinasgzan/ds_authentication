@@ -28,4 +28,8 @@ public class User {
     public void toggleActive() {
         isActive = !isActive;
     }
+
+    public boolean compareTo(String _username, String _ip) {
+        return username.equals(_username) && ip.equals(_ip);
+    }
 }
