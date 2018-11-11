@@ -120,8 +120,6 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 				br = new BufferedReader(fr);
 
 				String currentEntry;
-				//System.out.println(username);
-				//System.out.println(salt);
 
 				while ((currentEntry = br.readLine()) != null) {
 					String[] fields = currentEntry.split("\\s+");
