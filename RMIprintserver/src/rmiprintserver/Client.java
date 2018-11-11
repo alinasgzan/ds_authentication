@@ -1,18 +1,28 @@
 package rmiprintserver;
 
+import javax.rmi.ssl.SslRMIClientSocketFactory;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.rmi.Naming;
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Scanner;
 
 public class Client {
 
     private static IPrintServer printService;
 
-    public static void main(String[] args) throws RemoteException, NotBoundException, MalformedURLException {
+    public static void main(String[] args) throws RemoteException, NotBoundException, MalformedURLException, UnknownHostException {
 
-        printService = (IPrintServer) Naming.lookup("rmi://localhost:5099/printserver");
+        setSettings();
+
+        Registry registry = LocateRegistry.getRegistry(
+                InetAddress.getLocalHost().getHostName(), 5099,
+                new SslRMIClientSocketFactory());
+
+        IPrintServer obj = (IPrintServer) registry.lookup("printserver");
 
         Scanner sc = new Scanner(System.in);
         String command = "";
@@ -99,6 +109,28 @@ public class Client {
 
 
         return printService.login(username, password);
+    }
+    private static void setSettings() {
+
+        String pass = "potato";
+
+        System.setProperty("javax.net.ssl.debug", "all");
+
+        System.out.println(String.format("%s/RMI\\ print\\ server/SSL/keystore-Client", getProjectFolder()));
+        System.out.println(String.format("%s/RMI\\ print\\ server/SSL/truststore-Client", getProjectFolder()));
+
+        System.setProperty("javax.net.ssl.keyStore", String.format("%s/RMIprintserver/src/SSL/keystore-Client.jks", getProjectFolder()));
+        System.setProperty("javax.net.ssl.keyStorePassword", "orange");
+        System.setProperty("javax.net.ssl.trustStore", String.format("%s/RMIprintserver/src/SSL/truststore-Client.jks", getProjectFolder()));
+        System.setProperty("javax.net.ssl.trustStorePassword", "clementine");
+    }
+
+    /**
+     * Kinda dodgy but works
+     * @return
+     */
+    private static String getProjectFolder() {
+        return System.getProperty("user.dir");
     }
 }
 

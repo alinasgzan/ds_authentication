@@ -28,14 +28,15 @@ public class PrintServer {
 
     private static void setSettings() {
 
-        String pass = "password";
+        String pass = "potato";
 
         System.setProperty("javax.net.ssl.debug", "all");
-
-        System.setProperty("javax.net.ssl.keyStore", "C:\\ssl\\serverkeystore.jks");
-        System.setProperty("javax.net.ssl.keyStorePassword", pass);
-        System.setProperty("javax.net.ssl.trustStore", "C:\\ssl\\servertruststore.jks");
-        System.setProperty("javax.net.ssl.trustStorePassword", pass);
+        System.out.println(String.format("%s/RMI\\ print\\ server/SSL/keystore-Server", getProjectFolder()));
+        System.out.println(String.format("%s/RMI\\ print\\ server/SSL/truststore-Server.jks", getProjectFolder()));
+        System.setProperty("javax.net.ssl.keyStore", String.format("%s/RMIprintserver/src/SSL/keystore-Server.jks", getProjectFolder()));
+        System.setProperty("javax.net.ssl.keyStorePassword", "potato");
+        System.setProperty("javax.net.ssl.trustStore", String.format("%s/RMIprintserver/src/SSL/truststore-Server.jks", getProjectFolder()));
+        System.setProperty("javax.net.ssl.trustStorePassword", "banana");
     }
 
     /**
