@@ -140,7 +140,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 			}
 
 			catch (FileNotFoundException e){
-				// someone moved/renamed password file, send alterts
+				// someone moved/renamed password file, send alerts
 				System.out.println("we are heree 1");
 			}
 			catch (IOException e){
