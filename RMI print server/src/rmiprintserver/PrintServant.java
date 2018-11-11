@@ -120,9 +120,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 				br = new BufferedReader(fr);
 
 				String currentEntry;
-				//System.out.println(username);
-				//System.out.println(salt);
-
+                br.readLine(); // first line is irrelevant
 				while ((currentEntry = br.readLine()) != null) {
 					String[] fields = currentEntry.split("\\s+");
 					if (fields[0].equals(username)){
@@ -142,8 +140,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 			}
 
 			catch (FileNotFoundException e){
-				// someone moved/renamed password file, send alterts
-				System.out.println("we are heree 1");
+				// someone moved/renamed password file, send altert
 			}
 			catch (IOException e){
 				// log
