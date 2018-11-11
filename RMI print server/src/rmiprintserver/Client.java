@@ -7,36 +7,35 @@ import java.util.Scanner;
 
 public class Client {
 
-    private static IPrintServer service;
+    private static IPrintServer printService;
 
 	    public static void main(String[] args) throws RemoteException, NotBoundException, MalformedURLException {
 
-	        service = (IPrintServer) Naming.lookup("rmi://localhost:5099/printserver");
-	        //Using standard JWT tokens
-			var token = "";
+	        printService = (IPrintServer) Naming.lookup("rmi://localhost:5099/printserver");
 
 	        Scanner sc = new Scanner(System.in);
 	        String command = "";
-	        System.out.println("enter print command.. ");
+	        String username = "";
+	        boolean isAuthentificated = false;
 
 	        while(true) {
-	        	if (token != "" && service.checkSessionValidity(token)) {
+				command = sc.nextLine();
+
+				if (isAuthentificated) {
 					//Handle logged state with valid token
 
-					command = sc.nextLine();
 					if(command.equals("close")) {
 						System.out.println("goodbye..");
 						break;
 					}
-					String response = handleInput(command);
+					String response = handleUserActions(command, username);
 					System.out.println(response);
 				}
 				else {
 				    try {
 
-                        token = handleAuthentification(command);
+                        isAuthentificated = handleAuthentification(command);
                     } catch (RemoteException e) {
-				        token = "";
                     }
 					//Handle invalid/unlogged state
 				}
@@ -49,38 +48,38 @@ public class Client {
 	 * @param input
 	 * @return
 	 */
-	    private static String handleInput(String input) {
+	    private static String handleUserActions(String input, String username) {
 	        String[] commands = input.split("\\s+");
 	        try {
 	            switch (commands[0]) {
 	                case ("start"): {
-	                	return service.start();
+	                	return printService.start(username);
 	                }
 	                case ("stop"): {
-	                	return service.stop();
+	                	return printService.stop(username);
 	                }
 	                case ("print"): {
-	                	return service.print(commands[1], commands[2]);
+	                	return printService.print(commands[1], commands[2], username);
 	                }
 	                case ("queue"): {
-	                    return service.queue();
+	                    return printService.queue(username);
 	                }
 	                case ("top") : {
-	                	return service.topQueue(Integer.valueOf(commands[1]));
+	                	return printService.topQueue(Integer.valueOf(commands[1]), username);
 	                  }
 	                case ("restart") : {
-	                    return service.restart();
+	                    return printService.restart(username);
 	                }
 	                case("status") : {
-	                    return service.status();
+	                    return printService.status(username);
 	                }
 	                case ("setconfig") : {
 	                    
-	                	return service.setConfig(commands[1], commands[2]);
+	                	return printService.setConfig(commands[1], commands[2], username);
 	                    
 	                }
 	                case ("readconfig") : {
-	                    return service.readConfig(commands[1]);
+	                    return printService.readConfig(commands[1], username);
 	                }
 	                
 	            }
@@ -92,24 +91,15 @@ public class Client {
 	        return "No such command: " + input;
 	    }
 
-        private static String handleAuthentification(String input) throws RemoteException {
+        private static boolean handleAuthentification(String input) throws RemoteException {
             String[] commands = input.split("\\s+");
 
             //User input
             var  username = commands[0];
             var password = commands[1];
 
-            //Server params
-            var serverPublicKey = service.getPublicKey();
 
-
-            return service.login(username, encryptPassword(password, serverPublicKey));
-        }
-
-        private static String encryptPassword(String password, String publicKey) {
-
-	        return "";
-        }
-
+            return printService.login(username, password);
+	    }
 }
 

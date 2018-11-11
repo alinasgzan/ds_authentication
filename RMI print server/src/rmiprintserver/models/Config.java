@@ -1,3 +1,5 @@
+package rmiprintserver.models;
+
 public class Config {
 
 

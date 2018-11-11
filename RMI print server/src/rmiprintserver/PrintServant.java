@@ -1,33 +1,49 @@
 package rmiprintserver;
 import java.rmi.RemoteException;
+import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class PrintServant extends UnicastRemoteObject implements IPrintServer, IPrintAuth {
+public class PrintServant extends UnicastRemoteObject implements IPrintServer {
+
+        private ClientManager cm;
+        private PrinterManager pm;
 
 		public PrintServant() throws RemoteException {
 			super();
+			cm = new ClientManager();
+			pm = new PrinterManager();
 		}
-	
+
 		@Override
-		public String start() throws RemoteException {
-			return "Server started.. ";
+		public String start(String username) throws RemoteException {
+
+		    if (!pm.getIsActive())
+            {
+                pm.toggleIsActive();
+			    return "Server started.. ";
+            } else {
+		        return "Server is already started.";
+            }
 		}
 
 
 		@Override
-		public String stop() throws RemoteException {
-			return "Server stopped";
+		public String stop(String username) throws RemoteException {
+			if (pm.getIsActive()) {
+                pm.toggleIsActive();
+            }
+		    return "Server stopped";
 		}
 
 		@Override
-		public String print(String filename, String printer) throws RemoteException {
+		public String print(String filename, String printer, String username) throws RemoteException {
 			return "Printing file " + filename + " from printer " + printer;
 		}
 
 
 
 		@Override
-		public String queue() throws RemoteException {
+		public String queue(String username) throws RemoteException {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -35,21 +51,21 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer, I
 
 
 		@Override
-		public String topQueue(int job) throws RemoteException {
+		public String topQueue(int job, String username) throws RemoteException {
 			return "moving job " + job + " to top";
 		}
 
 
 
 		@Override
-		public String restart() throws RemoteException {
+		public String restart(String username) throws RemoteException {
 			return "restarting server.. ";
 		}
 
 
 
 		@Override
-		public String status() throws RemoteException {
+		public String status(String username) throws RemoteException {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -57,7 +73,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer, I
 
 
 		@Override
-		public String readConfig(String parameter) throws RemoteException {
+		public String readConfig(String parameter, String username) throws RemoteException {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -65,26 +81,40 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer, I
 
 
 		@Override
-		public String setConfig(String parameter, String value) throws RemoteException {
+		public String setConfig(String parameter, String value, String username) throws RemoteException {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public String login(String userName, String password) {
-            return "";
+		public boolean login(String username, String password) throws RemoteException {
+
+		    boolean isValid = userCheck(username, password);
+            try {
+                if (isValid) {
+                    cm.RegisterClient(username, getClientHost());
+                    return true;
+                }
+            } catch(ServerNotActiveException e) {}
+
+			return false;
 		}
+
+		private boolean userCheck(String username, String password) throws RemoteException {
+            //TODO: Connect to password storage and check
+		    return true;
+        }
 
 		@Override
-		public boolean checkSessionValidity(String token) {
-			return true;
+		public boolean logout(String username) throws RemoteException {
+			try {
+                cm.UnregisterClient(username, getClientHost());
+                return true;
+            } catch (ServerNotActiveException e) {}
+            finally {
+			    return false;
+            }
 		}
-
-		@Override
-		public String getPublicKey() {
-			return "";
-		}
-
 }
 
     
