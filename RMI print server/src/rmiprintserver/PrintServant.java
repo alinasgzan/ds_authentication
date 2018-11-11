@@ -121,6 +121,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
 				String currentEntry;
                 br.readLine(); // first line is irrelevant
+
 				while ((currentEntry = br.readLine()) != null) {
 					String[] fields = currentEntry.split("\\s+");
 					if (fields[0].equals(username)){
@@ -162,4 +163,4 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 		}
 }
 
-    
+
