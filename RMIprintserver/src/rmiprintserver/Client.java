@@ -22,7 +22,7 @@ public class Client {
                 InetAddress.getLocalHost().getHostName(), 5099,
                 new SslRMIClientSocketFactory());
 
-        IPrintServer obj = (IPrintServer) registry.lookup("printserver");
+        printService = (IPrintServer) registry.lookup("printserver");
 
         Scanner sc = new Scanner(System.in);
         String command = "";

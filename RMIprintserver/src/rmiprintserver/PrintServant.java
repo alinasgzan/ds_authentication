@@ -1,14 +1,19 @@
 package rmiprintserver;
 
-import java.io.NotActiveException;
+import javax.xml.bind.DatatypeConverter;
+import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     private ClientManager cm;
     private PrinterManager pm;
+
+    private static final String passwordFile = "RMIprintserver/userspas.txt";
 
     public PrintServant() throws RemoteException {
         super();
@@ -94,9 +99,44 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
         return false;
     }
 
-    private boolean userCheck(String username, String password) {
-        //TODO: Connect to password storage and check
-        return true;
+    private boolean userCheck(String username, String password) throws RemoteException{
+        // I assume username and password are already decrypted
+        boolean checkApproved = false;
+        BufferedReader br = null;
+        FileReader fr = null;
+        try {
+            fr = new FileReader(passwordFile);
+            br = new BufferedReader(fr);
+
+            String currentEntry;
+            br.readLine(); // first line is irrelevant
+            while ((currentEntry = br.readLine()) != null) {
+                String[] fields = currentEntry.split("\\s+");
+                if (fields[0].equals(username)){
+                    String hashedCorrectPassword = fields[1];
+                    String salt = fields[2];
+
+                    MessageDigest md = MessageDigest.getInstance("SHA-512");
+                    md.update(password.getBytes("UTF8"));
+                    md.update(salt.getBytes("UTF8"));
+                    byte[] digest = md.digest();
+                    String hashedCandidatePassword = DatatypeConverter.printHexBinary(digest).toLowerCase();
+
+                    if (hashedCandidatePassword.equals(hashedCorrectPassword)) checkApproved = true;
+                    break;
+                }
+            }
+        }
+
+        catch (FileNotFoundException e){
+            // someone moved/renamed password file, send altert
+        }
+        catch (IOException e){
+            // log
+        }
+        catch (NoSuchAlgorithmException e) {}
+
+        return checkApproved;
     }
 
     @Override
@@ -109,6 +149,8 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
         return false;
     }
+
+
 
     @Override
     public String readConfig(String parameter, String username) {
