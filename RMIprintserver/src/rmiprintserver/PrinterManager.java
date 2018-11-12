@@ -38,6 +38,9 @@ public class PrinterManager {
     }
 
     private void populatePrinterList() {
+
+        printerList = new Printer[Constants.DEFAULT_PRINTER_COUNT];
+
         for (int i = 0; i < Constants.DEFAULT_PRINTER_COUNT; i++) {
             printerList[i] = new Printer(i + 1);
             printerList[i].start();
@@ -57,7 +60,7 @@ public class PrinterManager {
 
         String printersStatus = "";
         for (Printer _printer : printerList) {
-            printersStatus += String.format("%s%n%s", _printer.status(), "---------------------");
+            printersStatus += String.format("%n%s%n%s", _printer.status(), "---------------------");
         }
         return printersStatus;
     }
@@ -68,7 +71,7 @@ public class PrinterManager {
 
         String printersQueue = "";
         for (Printer _printer : printerList) {
-            printersQueue += String.format("%s%n%s", _printer.getJobList(), "---------------------");
+            printersQueue += String.format("%n%s%n%s", _printer.getJobList(), "---------------------");
         }
         return printersQueue;
     }

@@ -45,6 +45,10 @@ public class Client {
                 try {
 
                     isAuthentificated = handleAuthentification(command);
+
+                    if (isAuthentificated) {
+                        username = command.split("\\s+")[0];
+                    }
                 } catch (RemoteException e) {
                 }
                 //Handle invalid/unlogged state

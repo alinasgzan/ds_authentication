@@ -44,6 +44,7 @@ public class Printer extends Thread {
         try {
             while (true) {
                 while (jobs.size() == 0) {
+                    state = Constants.PRINTER_DEFAULT_STATE;
                     Thread.onSpinWait();
                 }
                 currentPrintJob = jobs.remove(0);
@@ -68,7 +69,7 @@ public class Printer extends Thread {
         String jobList = "";
 
         for (PrintJob _job : jobs) {
-            jobList += String.format("%s%n", _job.toString());
+            jobList += String.format("%n%s%n", _job.toString());
         }
 
         return jobList;
