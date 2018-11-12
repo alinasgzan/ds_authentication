@@ -1,6 +1,5 @@
 package rmiprintserver;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
@@ -99,6 +98,13 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
         return false;
     }
 
+    private static String byteArrayToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder(a.length * 2);
+        for(byte b: a)
+            sb.append(String.format("%02x", b));
+        return sb.toString();
+    }
+
     private boolean userCheck(String username, String password) throws RemoteException{
         // I assume username and password are already decrypted
         boolean checkApproved = false;
@@ -120,7 +126,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
                     md.update(password.getBytes("UTF8"));
                     md.update(salt.getBytes("UTF8"));
                     byte[] digest = md.digest();
-                    String hashedCandidatePassword = DatatypeConverter.printHexBinary(digest).toLowerCase();
+                    String hashedCandidatePassword = byteArrayToHex(digest).toLowerCase();
 
                     if (hashedCandidatePassword.equals(hashedCorrectPassword)) checkApproved = true;
                     break;
