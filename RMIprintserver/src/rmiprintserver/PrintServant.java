@@ -110,15 +110,23 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
         if (IsStringNullOrEmptyOrWhiteSpace(username) || IsStringNullOrEmptyOrWhiteSpace(password)) return false;
 
+        try {
+            if (cm.IsUserBlocked(username, getClientHost()))
+                return  false;
+        } catch (ServerNotActiveException e) {
+            return false;
+        }
+
         boolean isValid = userCheck(username, password);
         try {
             if (isValid) {
                 cm.RegisterClient(username, getClientHost());
                 return true;
             }
+        cm.RegisterIntruderHitCount(username, getClientHost());
+
         } catch (ServerNotActiveException e) {
         }
-
         return false;
     }
 
