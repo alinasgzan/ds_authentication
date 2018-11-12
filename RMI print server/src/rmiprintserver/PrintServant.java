@@ -149,6 +149,44 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 			catch (NoSuchAlgorithmException e) {}
 
 		    return checkApproved;
+		private boolean userCheck(String username, String password) throws RemoteException{
+			// I assume username and password are already decrypted
+			boolean checkApproved = false;
+			BufferedReader br = null;
+			FileReader fr = null;
+			try {
+				fr = new FileReader(passwordFile);
+				br = new BufferedReader(fr);
+
+				String currentEntry;
+                br.readLine(); // first line is irrelevant
+				while ((currentEntry = br.readLine()) != null) {
+					String[] fields = currentEntry.split("\\s+");
+					if (fields[0].equals(username)){
+						String hashedCorrectPassword = fields[1];
+						String salt = fields[2];
+
+						MessageDigest md = MessageDigest.getInstance("SHA-512");
+						md.update(password.getBytes("UTF8"));
+						md.update(salt.getBytes("UTF8"));
+						byte[] digest = md.digest();
+						String hashedCandidatePassword = DatatypeConverter.printHexBinary(digest).toLowerCase();
+
+						if (hashedCandidatePassword.equals(hashedCorrectPassword)) checkApproved = true;
+						break;
+					}
+				}
+			}
+
+			catch (FileNotFoundException e){
+				// someone moved/renamed password file, send altert
+			}
+			catch (IOException e){
+				// log
+			}
+			catch (NoSuchAlgorithmException e) {}
+
+		    return checkApproved;
         }
 
 		@Override
