@@ -75,6 +75,7 @@ public class ClientManager {
     }
 
     public void RegisterIntruderHitCount(String username, String ip) {
+        boolean isUserFound = false;
         //If we use standard iterator pattern we won't be able to update
         for (int i = 0; i < intruderList.size(); i++) {
             //Get a local copy of the entity
@@ -85,19 +86,23 @@ public class ClientManager {
                     _intruder.block();
 
                     intruderList.set(i, _intruder);
-
+                    isUserFound = true;
                     break;
                 }
                 _intruder.hit();
                 //Update collection
                 intruderList.set(i, _intruder);
                 //Stop iterating
+                isUserFound = true;
                 break;
             }
         }
+        if (!isUserFound) {
+
         RegisterPotentialIntruder(username, ip);
 
         RegisterIntruderHitCount(username, ip);
+        }
     }
 
     public boolean IsUserBlocked(String username, String ip) {
