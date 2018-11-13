@@ -26,7 +26,7 @@ git clone https://github.com/alinasgzan/ds_authentication.git
 
 ### Class diagram
 
-[alt-text](https://github.com/alinasgzan/ds_authentication/tree/master/Assets/ClassDiagram.png)
+[alt-text](https://github.com/alinasgzan/ds_authentication/blob/master/Assets/ClassDiagram.png)
 
 ## Authors
 
