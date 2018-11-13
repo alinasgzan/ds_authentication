@@ -13,6 +13,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     private ClientManager cm;
     private PrinterManager pm;
+    private ConfigManager configManager;
     private Logger logger = Logger.getLogger("Logger");
 
     private static final String passwordFile = "RMIprintserver/userspas.txt";
@@ -21,6 +22,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
         super();
         cm = new ClientManager();
         pm = new PrinterManager();
+        configManager = new ConfigManager();
     }
 
     @Override
@@ -235,14 +237,19 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     @Override
     public String readConfig(String parameter, String username) {
-        // TODO Auto-generated method stub
-        return null;
+
+        if (!IsValidUser(username)) return "Unauthorized";
+
+        return configManager.getEntry(parameter);
     }
 
     @Override
     public String setConfig(String parameter, String value, String username) {
-        // TODO Auto-generated method stub
-        return null;
+
+        if (!IsValidUser(username)) return "Unauthorized";
+
+        configManager.AddConfigEntry(parameter, value);
+        return String.format("Value %s with key %s successfully added", value, parameter);
     }
 
     private static boolean IsStringNullOrEmptyOrWhiteSpace(String input) {
