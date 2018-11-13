@@ -44,7 +44,7 @@ public class ClientManager {
      */
     public void toggleActiveClient(String username, String ip) {
         //If we use standard iterator pattern we won't be able to update
-        for (int i = 0; i <= clientList.size(); i++) {
+        for (int i = 0; i < clientList.size(); i++) {
             //Get a local copy of the entity
             User _user = clientList.get(i);
             if (_user.getUsername().equals(username) && _user.getIp().equals(ip)) {
@@ -59,7 +59,7 @@ public class ClientManager {
     }
 
     public boolean IsUserRegistered(String username, String ip) {
-        for (int i = 0; i <= clientList.size(); i++) {
+        for (int i = 0; i < clientList.size(); i++) {
             if (clientList.get(i).compareTo(username, ip))
                 return true;
         }
@@ -76,7 +76,7 @@ public class ClientManager {
 
     public void RegisterIntruderHitCount(String username, String ip) {
         //If we use standard iterator pattern we won't be able to update
-        for (int i = 0; i <= intruderList.size(); i++) {
+        for (int i = 0; i < intruderList.size(); i++) {
             //Get a local copy of the entity
             PotentialIntruder _intruder = intruderList.get(i);
             if (_intruder.getUsername().equals(username) && _intruder.getIp().equals(ip)) {
@@ -102,7 +102,7 @@ public class ClientManager {
 
     public boolean IsUserBlocked(String username, String ip) {
         //If we use standard iterator pattern we won't be able to update
-        for (int i = 0; i <= intruderList.size(); i++) {
+        for (int i = 0; i < intruderList.size(); i++) {
             //Get a local copy of the entity
             PotentialIntruder _intruder = intruderList.get(i);
             if (_intruder.getUsername().equals(username) && _intruder.getIp().equals(ip)) {
