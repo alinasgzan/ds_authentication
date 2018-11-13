@@ -35,8 +35,9 @@ public class Client {
             if (isAuthentificated) {
                 //Handle logged state with valid token
 
-                if (command.equals("close")) {
+                if (command.equals("close") || command.equals("logout")) {
                     System.out.println("goodbye..");
+                    handleUserActions("logout", username);
                     break;
                 }
                 String response = handleUserActions(command, username);
@@ -93,6 +94,11 @@ public class Client {
                 }
                 case ("readconfig"): {
                     return printService.readConfig(commands[1], username);
+                }
+                case ("logout"): {
+                    if(printService.logout(username))
+                        return "You have logged out";
+                    else return "There was a problem";
                 }
 
             }

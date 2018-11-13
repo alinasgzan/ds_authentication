@@ -36,7 +36,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     public String stop(String username) {
         if (!IsValidUser(username)) return "Unauthorized";
 
-        if (pm.getIsActive()) {
+        if (!pm.getIsActive()) {
             pm.toggleIsActive();
 
             return "Server stopped";
@@ -48,7 +48,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     public String print(String filename, String printer, String username) {
         if (!IsValidUser(username)) return "Unauthorized";
 
-        if (pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
+        if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
 
         try {
             pm.print(filename, Integer.parseInt(printer), username);
@@ -64,7 +64,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     public String queue(String username) {
         if (!IsValidUser(username)) return "Unauthorized";
 
-        if (pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
+        if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
 
         return pm.queue();
     }
@@ -74,7 +74,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     public String topQueue(int job, String username) {
         if (!IsValidUser(username)) return "Unauthorized";
 
-        if (pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
+        if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
 
         if (pm.topQueue(job))
             return "moving job " + job + " to top";
@@ -86,7 +86,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     public String restart(String username) {
         if (!IsValidUser(username)) return "Unauthorized";
 
-        if (pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
+        if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
 
         if (pm.getIsActive()) {
             pm.toggleIsActive();
@@ -100,7 +100,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     public String status(String username) {
         if (!IsValidUser(username)) return "Unauthorized";
 
-        if (pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
+        if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
 
         return pm.status();
     }
