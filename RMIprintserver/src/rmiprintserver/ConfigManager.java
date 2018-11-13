@@ -29,6 +29,10 @@ public class ConfigManager {
         config.resetConfig();
     }
 
+    public String getEntry(String key) {
+        return config.getEntry(key);
+    }
+
     /**
      * Something for next version
      * Current version will keep it simple

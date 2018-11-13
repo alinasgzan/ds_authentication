@@ -35,6 +35,14 @@ public class Config {
         }
     }
 
+    public String getEntry(String key) {
+        try {
+            return configData.get(key);
+        } catch (Exception e) {
+            return "Invalid key";
+        }
+    }
+
     @Override
     public String toString() {
 
