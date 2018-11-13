@@ -111,14 +111,22 @@ public class Client {
     }
 
     private static boolean handleAuthentification(String input) throws RemoteException {
+
         String[] commands = input.split("\\s+");
 
-        //User input
-        var username = commands[0];
-        var password = commands[1];
+        try{
+            //User input
+            var username = commands[0];
+            var password = commands[1];
 
+            return printService.login(username == null ? "" : username, password);
+            //return printService.login(username, password);
+        }
+        catch(Exception e){
+            System.out.println("Please login using your username and password first");
+        }
 
-        return printService.login(username, password);
+        return false;
     }
     private static void setSettings() {
 
