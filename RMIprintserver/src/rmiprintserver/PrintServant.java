@@ -6,11 +6,14 @@ import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Logger;
+
 
 public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     private ClientManager cm;
     private PrinterManager pm;
+    private Logger logger = Logger.getLogger("Logger");
 
     private static final String passwordFile = "RMIprintserver/userspas.txt";
 
@@ -22,33 +25,45 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     @Override
     public String start(String username) {
-        if (!IsValidUser(username)) return "Unauthorized";
-
+        if (!IsValidUser(username))
+            {
+            logger.info("invalid username, operation denied");
+            return "Unauthorized";}
         if (!pm.getIsActive()) {
             pm.toggleIsActive();
+            logger.info("user " + username + " started server");
             return "Server started.. ";
         }
+        logger.info("cannot start server, already started");
         return "Server is already started.";
+
     }
 
 
     @Override
     public String stop(String username) {
-        if (!IsValidUser(username)) return "Unauthorized";
-
+        if (!IsValidUser(username))
+            {
+            logger.info("invalid username, operation denied");
+            return "Unauthorized";}
         if (!pm.getIsActive()) {
             pm.toggleIsActive();
-
+            logger.info("user " + username + " stopped server");
             return "Server stopped";
         }
+        logger.info("cannot stop server, already stoped");
         return "Server is already stopped.";
     }
 
     @Override
     public String print(String filename, String printer, String username) {
-        if (!IsValidUser(username)) return "Unauthorized";
+        if (!IsValidUser(username)) {
+            logger.info("invalid username, operation denied");
+            return "Unauthorized";
+        }
 
         if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
+        logger.info("service not started, operation denied");
 
         try {
             pm.print(filename, Integer.parseInt(printer), username);
@@ -57,22 +72,32 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
         } catch (Exception e) {
             return String.format("Printer %s does not exist", printer);
         }
+        logger.info("Printing file " + filename + " from printer " + printer + " for user " + username );
         return "Printing file " + filename + " from printer " + printer;
     }
 
     @Override
     public String queue(String username) {
-        if (!IsValidUser(username)) return "Unauthorized";
+        if (!IsValidUser(username))
+        {
+            logger.info("invalid username, operation denied");
+            return "Unauthorized";
+        }
 
         if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
 
+        logger.info("displaying queue for user " + username );
         return pm.queue();
     }
 
 
     @Override
     public String topQueue(int job, String username) {
-        if (!IsValidUser(username)) return "Unauthorized";
+        if (!IsValidUser(username))
+        {
+            logger.info("invalid username, operation denied");
+            return "Unauthorized";
+        }
 
         if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
 
@@ -84,7 +109,11 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     @Override
     public String restart(String username) {
-        if (!IsValidUser(username)) return "Unauthorized";
+        if (!IsValidUser(username))
+        {
+            logger.info("invalid username, operation denied");
+            return "Unauthorized";
+        }
 
         if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
 
@@ -98,7 +127,11 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     @Override
     public String status(String username) {
-        if (!IsValidUser(username)) return "Unauthorized";
+        if (!IsValidUser(username))
+        {
+            logger.info("invalid username, operation denied");
+            return "Unauthorized";
+        }
 
         if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
 
@@ -111,8 +144,9 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
         if (IsStringNullOrEmptyOrWhiteSpace(username) || IsStringNullOrEmptyOrWhiteSpace(password)) return false;
 
         try {
-            if (cm.IsUserBlocked(username, getClientHost()))
-                return  false;
+            if (cm.IsUserBlocked(username, getClientHost())){
+                logger.info("User is blocked, login not allowed");
+                return  false;}
         } catch (ServerNotActiveException e) {
             return false;
         }
@@ -120,6 +154,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
         boolean isValid = userCheck(username, password);
         try {
             if (isValid) {
+
                 cm.RegisterClient(username, getClientHost());
                 return true;
             }
@@ -160,8 +195,16 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
                     byte[] digest = md.digest();
                     String hashedCandidatePassword = byteArrayToHex(digest).toLowerCase();
 
-                    if (hashedCandidatePassword.equals(hashedCorrectPassword)) checkApproved = true;
+                    if (hashedCandidatePassword.equals(hashedCorrectPassword)) {
+                        logger.info("authentication successful, user " + username + " logged in");
+                        checkApproved = true; }
+                    else {
+                        logger.info("username and pass do not match, access denied");
+                    }
                     break;
+                }
+                else {
+                        logger.info("no such user: " + username);
                 }
             }
         }
