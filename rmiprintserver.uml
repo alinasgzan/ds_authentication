@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>rmiprintserver</OriginalElement>
+  <nodes>
+    <node x="1203.6398809523812" y="0.0">rmiprintserver.ConfigManager</node>
+    <node x="608.375" y="125.0">rmiprintserver.models.PotentialIntruder</node>
+    <node x="774.5833333333334" y="338.0">rmiprintserver.IPrintServer</node>
+    <node x="0.0" y="136.0">rmiprintserver.models.Printer</node>
+    <node x="838.6398809523811" y="780.0">rmiprintserver.Client</node>
+    <node x="212.54166666666666" y="670.0">rmiprintserver.PrintServant</node>
+    <node x="206.62499999999997" y="22.5">rmiprintserver.Constants</node>
+    <node x="15.625" y="0.0">rmiprintserver.models.PrintJob</node>
+    <node x="304.37499999999994" y="136.0">rmiprintserver.models.User</node>
+    <node x="0.0" y="1221.0">rmiprintserver.models.Config</node>
+    <node x="394.58333333333337" y="360.0">rmiprintserver.ClientManager</node>
+    <node x="30.625" y="370.5">rmiprintserver.PrinterManager</node>
+    <node x="293.04166666666663" y="1080.0">rmiprintserver.PrintServer</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="rmiprintserver.PrinterManager" target="rmiprintserver.models.Printer">
+      <point x="0.0" y="-103.5" />
+      <point x="30.625" y="70.5" />
+    </edge>
+    <edge source="rmiprintserver.Client" target="rmiprintserver.IPrintServer">
+      <point x="80.0" y="-70.0" />
+      <point x="1078.6398809523812" y="650.0" />
+      <point x="1031.25" y="650.0" />
+      <point x="102.66666666666663" y="136.0" />
+    </edge>
+    <edge source="rmiprintserver.PrinterManager" target="rmiprintserver.Constants">
+      <point x="98.0" y="-103.5" />
+      <point x="251.125" y="313.0" />
+      <point x="277.125" y="313.0" />
+      <point x="277.125" y="100.0" />
+      <point x="263.625" y="100.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="rmiprintserver.ClientManager" target="rmiprintserver.models.PotentialIntruder">
+      <point x="30.0" y="-114.0" />
+      <point x="604.5833333333334" y="313.0" />
+      <point x="634.2083333333333" y="313.0" />
+      <point x="-51.666666666666686" y="81.5" />
+    </edge>
+    <edge source="rmiprintserver.PrintServant" target="rmiprintserver.IPrintServer">
+      <point x="159.58333333333337" y="-180.0" />
+      <point x="563.625" y="650.0" />
+      <point x="825.9166666666667" y="650.0" />
+      <point x="-102.66666666666663" y="136.0" />
+    </edge>
+    <edge source="rmiprintserver.PrintServer" target="rmiprintserver.PrintServant">
+      <point x="0.0" y="-48.0" />
+      <point x="0.0" y="180.0" />
+    </edge>
+    <edge source="rmiprintserver.PrintServant" target="rmiprintserver.Constants">
+      <point x="-31.916666666666742" y="-180.0" />
+      <point x="372.1249999999999" y="630.0" />
+      <point x="293.875" y="630.0" />
+      <point x="293.875" y="100.0" />
+      <point x="301.625" y="100.0" />
+      <point x="38.0" y="15.0" />
+    </edge>
+    <edge source="rmiprintserver.models.Printer" target="rmiprintserver.Constants">
+      <point x="98.0" y="-70.5" />
+      <point x="220.5" y="100.0" />
+      <point x="225.62499999999997" y="100.0" />
+      <point x="-38.0" y="15.0" />
+    </edge>
+    <edge source="rmiprintserver.PrintServant" target="rmiprintserver.ClientManager">
+      <point x="31.91666666666663" y="-180.0" />
+      <point x="435.95833333333326" y="650.0" />
+      <point x="484.58333333333337" y="650.0" />
+      <point x="-90.0" y="114.0" />
+    </edge>
+    <edge source="rmiprintserver.PrintServant" target="rmiprintserver.PrinterManager">
+      <point x="-159.58333333333343" y="-180.0" />
+      <point x="244.45833333333323" y="650.0" />
+      <point x="91.875" y="650.0" />
+      <point x="-61.25" y="103.5" />
+    </edge>
+    <edge source="rmiprintserver.models.Printer" target="rmiprintserver.models.PrintJob">
+      <point x="-98.0" y="-70.5" />
+      <point x="24.5" y="100.0" />
+      <point x="37.0" y="100.0" />
+      <point x="-64.125" y="37.5" />
+    </edge>
+    <edge source="rmiprintserver.ClientManager" target="rmiprintserver.models.User">
+      <point x="-150.0" y="-114.0" />
+      <point x="424.58333333333337" y="313.0" />
+      <point x="351.70833333333326" y="313.0" />
+      <point x="-94.66666666666667" y="70.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.7102975158159853" x="736.3339001906247" y="594.1278263686418" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
