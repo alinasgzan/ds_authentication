@@ -1,7 +1,6 @@
 package rmiprintserver;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
@@ -29,7 +28,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     @Override
     public String start(String username) {
-        if (!IsValidUser(username))
+        if (!IsValidUser(username, Constants.START_PERMISSION))
             {
             logger.info("not authenticated, operation denied");
             return "Unauthorized";}
@@ -46,7 +45,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     @Override
     public String stop(String username) {
-        if (!IsValidUser(username))
+        if (!IsValidUser(username, Constants.STOP_PERMISSION))
             {
             logger.info("invalid username, operation denied");
             return "Unauthorized";}
@@ -61,7 +60,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     @Override
     public String print(String filename, String printer, String username) {
-        if (!IsValidUser(username)) {
+        if (!IsValidUser(username, Constants.PRINT_PERMISSION)) {
             logger.info("invalid username, operation denied");
             return "Unauthorized";
         }
@@ -82,7 +81,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     @Override
     public String queue(String username) {
-        if (!IsValidUser(username))
+        if (!IsValidUser(username, Constants.QUEUE_PERMISSION))
         {
             logger.info("invalid username, operation denied");
             return "Unauthorized";
@@ -97,7 +96,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     @Override
     public String topQueue(int job, String username) {
-        if (!IsValidUser(username))
+        if (!IsValidUser(username, Constants.TOPQUEUE_PERMISSION))
         {
             logger.info("invalid username, operation denied");
             return "Unauthorized";
@@ -113,7 +112,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     @Override
     public String restart(String username) {
-        if (!IsValidUser(username))
+        if (!IsValidUser(username, Constants.RESTART_PERMISSION))
         {
             logger.info("invalid username, operation denied");
             return "Unauthorized";
@@ -131,7 +130,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
     @Override
     public String status(String username) {
-        if (!IsValidUser(username))
+        if (!IsValidUser(username, Constants.STATUS_PERMISSION))
         {
             logger.info("invalid username, operation denied");
             return "Unauthorized";
@@ -242,7 +241,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     @Override
     public String readConfig(String parameter, String username) {
 
-        if (!IsValidUser(username)) return "Unauthorized";
+        if (!IsValidUser(username, Constants.READCONFIG_PERMISSION)) return "Unauthorized";
 
         return configManager.getEntry(parameter);
     }
@@ -250,7 +249,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     @Override
     public String setConfig(String parameter, String value, String username) {
 
-        if (!IsValidUser(username)) return "Unauthorized";
+        if (!IsValidUser(username, Constants.SETCONFIG_PERMISSION)) return "Unauthorized";
 
         configManager.AddConfigEntry(parameter, value);
         return String.format("Value %s with key %s successfully added", value, parameter);
@@ -260,9 +259,9 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
         return (input == null || input.equals("") || input.equals(" "));
     }
 
-    private boolean IsValidUser(String username) {
+    private boolean IsValidUser(String username, String permission) {
         try {
-            return !IsStringNullOrEmptyOrWhiteSpace(username) && cm.IsUserRegistered(username, getClientHost());
+            return !IsStringNullOrEmptyOrWhiteSpace(username) && cm.IsUserRegistered(username, getClientHost()) && cm.IsUserAllowed(username, permission);
         } catch (Exception e) {
             return false;
         }

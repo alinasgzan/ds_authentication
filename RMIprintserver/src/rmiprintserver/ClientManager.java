@@ -21,7 +21,9 @@ public class ClientManager {
      * @param ip
      */
     public void RegisterClient(String username, String ip) {
-        clientList.add(new User(ip, username));
+        User _user = new User(ip, username, AccessManager.getPermissionsForUser(username));
+
+        clientList.add(_user);
 
         UnregisterPotentialIntruder(username, ip);
     }
@@ -115,6 +117,13 @@ public class ClientManager {
                 //Update status
                return _intruder.isBlocked();
             }
+        }
+        return false;
+    }
+
+    public boolean IsUserAllowed(String username, String permission) {
+        for (User _user: clientList) {
+            if(_user.getUsername().equals(username)) return _user.isAllowed(permission);
         }
         return false;
     }
