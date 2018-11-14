@@ -20,8 +20,8 @@ public class AccessManager {
                 String[] permissions = entry.split(" ");
 
                 if (permissions[0].equals(username)) {
-                    for (String perm : permissions) {
-                        hm.replace(perm, true);
+                    for (int i = 1; i < permissions.length; i++) {
+                        hm.replace(permissions[i], true);
                     }
 
                     return hm;
