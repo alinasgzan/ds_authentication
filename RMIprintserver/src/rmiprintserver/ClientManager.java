@@ -83,6 +83,7 @@ public class ClientManager {
             if (_intruder.getUsername().equals(username) && _intruder.getIp().equals(ip)) {
                 //Update status
                 if (_intruder.getHitCount() > randomWithRange(5,10)){
+                    System.out.println("found intruder " + _intruder.getUsername() + " after " + _intruder.getHitCount() + " hits");
                     _intruder.block();
 
                     intruderList.set(i, _intruder);

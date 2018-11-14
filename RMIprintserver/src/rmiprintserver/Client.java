@@ -114,16 +114,20 @@ public class Client {
 
         String[] commands = input.split("\\s+");
 
+        if (commands.length==1){
+            printService.login(commands[0],"");
+        }
+
         try{
             //User input
             var username = commands[0];
             var password = commands[1];
 
-            return printService.login(username == null ? "" : username, password);
+            return printService.login(username== null ? "" : username, password);
             //return printService.login(username, password);
         }
         catch(Exception e){
-            System.out.println("Please login using your username and password first");
+            System.out.println("Please login using your username and password");
         }
 
         return false;

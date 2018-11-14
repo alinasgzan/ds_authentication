@@ -1,11 +1,13 @@
 package rmiprintserver;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 
@@ -29,7 +31,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     public String start(String username) {
         if (!IsValidUser(username))
             {
-            logger.info("invalid username, operation denied");
+            logger.info("not authenticated, operation denied");
             return "Unauthorized";}
         if (!pm.getIsActive()) {
             pm.toggleIsActive();
@@ -143,7 +145,12 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     @Override
     public boolean login(String username, String password) throws RemoteException {
 
-        if (IsStringNullOrEmptyOrWhiteSpace(username) || IsStringNullOrEmptyOrWhiteSpace(password)) return false;
+        if (IsStringNullOrEmptyOrWhiteSpace(username) || IsStringNullOrEmptyOrWhiteSpace(password)) {
+            if (IsStringNullOrEmptyOrWhiteSpace(password)) {
+                handleUnauthenticatedCommands(username);
+            }
+            return false;
+        }
 
         try {
             if (cm.IsUserBlocked(username, getClientHost())){
@@ -205,9 +212,6 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
                     }
                     break;
                 }
-                else {
-                        logger.info("no such user: " + username);
-                }
             }
         }
 
@@ -261,6 +265,12 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
             return !IsStringNullOrEmptyOrWhiteSpace(username) && cm.IsUserRegistered(username, getClientHost());
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    private void handleUnauthenticatedCommands(String input){
+        if (Arrays.asList(Constants.DEFAULT_OPERATIONS).contains(input)) {
+            logger.info("user not authenticated, " + input + " operation not allowed");
         }
     }
 }
