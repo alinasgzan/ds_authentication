@@ -1,0 +1,24 @@
+/Users/alina/IdeaProjects/ds_authentication/RMI\ print\ server/SSL/keystore-Server
+/Users/alina/IdeaProjects/ds_authentication/RMI\ print\ server/SSL/truststore-Server.jks
+/Users/alina/IdeaProjects/ds_authentication/RMI\ print\ server/SSL/keystore-Server
+/Users/alina/IdeaProjects/ds_authentication/RMI\ print\ server/SSL/truststore-Server.jks
+RMI registry running on port 5099
+Nov 14, 2018 7:11:08 AM rmiprintserver.PrintServant handleUnauthenticatedCommands
+INFO: user not authenticated, start operation not allowed
+Nov 14, 2018 7:11:16 AM rmiprintserver.PrintServant handleUnauthenticatedCommands
+INFO: user not authenticated, queue operation not allowed
+Nov 14, 2018 7:11:21 AM rmiprintserver.PrintServant handleUnauthenticatedCommands
+INFO: user not authenticated, stop operation not allowed
+Nov 14, 2018 7:11:37 AM rmiprintserver.PrintServant userCheck
+INFO: authentication successful, user Kant logged in
+Printer 2 started.
+Printer 3 started.
+Printer 5 started.
+Printer 1 started.
+Printer 4 started.
+Nov 14, 2018 7:12:26 AM rmiprintserver.PrintServant start
+INFO: user Kant started server
+Nov 14, 2018 7:13:05 AM rmiprintserver.PrintServant print
+INFO: service not started, operation denied
+Nov 14, 2018 7:13:05 AM rmiprintserver.PrintServant print
+INFO: Printing file 2 from printer 1 for user Kant
