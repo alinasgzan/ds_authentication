@@ -10,7 +10,7 @@ public class PrintServer {
 
     public static void main(String args[]) throws RemoteException {
         setSettings();
-
+        // testing
         try {
 
             setSettings();
