@@ -11,7 +11,7 @@ public class AccessManager {
 
     public static HashMap<String, Boolean> getPermissionsForUser(String username) {
 
-        HashMap<String, Boolean> hm = Constants.defaultPermissions;
+        HashMap<String, Boolean> hm = new HashMap<String,Boolean>(Constants.defaultPermissions);
         try {
             FileReader fr = new FileReader(accessPolicyFile);
             BufferedReader br = new BufferedReader(fr);
