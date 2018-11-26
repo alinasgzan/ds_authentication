@@ -4,6 +4,6 @@ Cecilia:PowerUser
 David:User
 Erica:User
 Fred:User
-George:User,Technician
+George:User Technician
 Henry:User
 Ida:PowerUser
