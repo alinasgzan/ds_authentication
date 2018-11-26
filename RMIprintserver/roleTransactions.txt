@@ -1,0 +1,6 @@
+roles to transactions mapping
+checkSetInclusion=false
+Administrator:start stop restart print queue topQueue status readConfig setConfig
+Technician:start stop restart status readConfig setConfig
+PowerUser:print queue topQueue restart
+User:print queue
