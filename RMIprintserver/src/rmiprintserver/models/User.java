@@ -1,16 +1,25 @@
 package rmiprintserver.models;
 
+import java.util.ArrayList;
+
 public class User {
 
     private String ip;
     private String username;
     private boolean isActive;
+    private ArrayList<String> roles;
 
     public User(String _ip, String _username) {
         isActive = false;
-
         ip = _ip;
         username = _username;
+    }
+
+    public User(String _ip, String _username, ArrayList<String> _roles) {
+        isActive = false;
+        ip = _ip;
+        username = _username;
+        roles = _roles;
     }
 
     public String getUsername() {

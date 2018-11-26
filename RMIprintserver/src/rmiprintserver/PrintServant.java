@@ -7,8 +7,11 @@ import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
+
+
 
 
 public class PrintServant extends UnicastRemoteObject implements IPrintServer {
@@ -18,21 +21,27 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     private ConfigManager configManager;
     private Logger logger = Logger.getLogger("Logger");
 
-    private static final String passwordFile = "RMIprintserver/userspas.txt";
+
+    private static final String passwordFile = "RMIprintserver/userspas1.txt";
 
     public PrintServant() throws RemoteException {
         super();
         cm = new ClientManager();
         pm = new PrinterManager();
         configManager = new ConfigManager();
+        //roleTransactions = AccessManager.readRoleTransactions();
     }
 
     @Override
-    public String start(String username) {
+    public String start(String username, String role) {
         if (!IsValidUser(username))
             {
             logger.info("not authenticated, operation denied");
             return "Unauthorized";}
+        if (!IsTransactionAllowedForUser(username,Constants.START_PERMISSION, role)){
+            logger.info("operation not allowed for user " + username + ", operation denied");
+            return "Operation denied";
+        }
         if (!pm.getIsActive()) {
             pm.toggleIsActive();
             logger.info("user " + username + " started server");
@@ -45,11 +54,15 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
 
     @Override
-    public String stop(String username) {
+    public String stop(String username, String role) {
         if (!IsValidUser(username))
             {
             logger.info("invalid username, operation denied");
             return "Unauthorized";}
+        if (!IsTransactionAllowedForUser(username,Constants.STOP_PERMISSION, role)){
+            logger.info("operation not allowed for user " + username + ", operation denied");
+            return "Operation denied";
+        }
         if (!pm.getIsActive()) {
             pm.toggleIsActive();
             logger.info("user " + username + " stopped server");
@@ -60,12 +73,15 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     }
 
     @Override
-    public String print(String filename, String printer, String username) {
+    public String print(String filename, String printer, String username, String role) {
         if (!IsValidUser(username)) {
             logger.info("invalid username, operation denied");
             return "Unauthorized";
         }
-
+        if (!IsTransactionAllowedForUser(username,Constants.PRINT_PERMISSION, role)){
+            logger.info("operation not allowed for user " + username + ", operation denied");
+            return "Operation denied";
+        }
         if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
         logger.info("service not started, operation denied");
 
@@ -81,11 +97,16 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     }
 
     @Override
-    public String queue(String username) {
+    public String queue(String username, String role) {
         if (!IsValidUser(username))
         {
             logger.info("invalid username, operation denied");
             return "Unauthorized";
+        }
+
+        if (!IsTransactionAllowedForUser(username,Constants.QUEUE_PERMISSION, role)){
+            logger.info("operation not allowed for user " + username + ", operation denied");
+            return "Operation denied";
         }
 
         if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
@@ -96,11 +117,16 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
 
     @Override
-    public String topQueue(int job, String username) {
+    public String topQueue(int job, String username, String role) {
         if (!IsValidUser(username))
         {
             logger.info("invalid username, operation denied");
             return "Unauthorized";
+        }
+
+        if (!IsTransactionAllowedForUser(username,Constants.TOPQUEUE_PERMISSION, role)){
+            logger.info("operation not allowed for user " + username + ", operation denied");
+            return "Operation denied";
         }
 
         if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
@@ -112,11 +138,16 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     }
 
     @Override
-    public String restart(String username) {
+    public String restart(String username, String role) {
         if (!IsValidUser(username))
         {
             logger.info("invalid username, operation denied");
             return "Unauthorized";
+        }
+
+        if (!IsTransactionAllowedForUser(username,Constants.RESTART_PERMISSION, role)){
+            logger.info("operation not allowed for user " + username + ", operation denied");
+            return "Operation denied";
         }
 
         if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
@@ -130,11 +161,16 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     }
 
     @Override
-    public String status(String username) {
+    public String status(String username, String role) {
         if (!IsValidUser(username))
         {
             logger.info("invalid username, operation denied");
             return "Unauthorized";
+        }
+
+        if (!IsTransactionAllowedForUser(username,Constants.STATUS_PERMISSION, role)){
+            logger.info("operation not allowed for user " + username + ", operation denied");
+            return "Operation denied";
         }
 
         if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
@@ -240,17 +276,27 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
 
 
     @Override
-    public String readConfig(String parameter, String username) {
+    public String readConfig(String parameter, String username, String role) {
 
         if (!IsValidUser(username)) return "Unauthorized";
+
+        if (!IsTransactionAllowedForUser(username,Constants.READCONFIG_PERMISSION, role)){
+            logger.info("operation not allowed for user " + username + ", operation denied");
+            return "Operation denied";
+        }
 
         return configManager.getEntry(parameter);
     }
 
     @Override
-    public String setConfig(String parameter, String value, String username) {
+    public String setConfig(String parameter, String value, String username, String role) {
 
         if (!IsValidUser(username)) return "Unauthorized";
+
+        if (!IsTransactionAllowedForUser(username,Constants.SETCONFIG_PERMISSION, role)){
+            logger.info("operation not allowed for user " + username + ", operation denied");
+            return "Operation denied";
+        }
 
         configManager.AddConfigEntry(parameter, value);
         return String.format("Value %s with key %s successfully added", value, parameter);
@@ -266,6 +312,10 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private boolean IsTransactionAllowedForUser(String username, String transaction, String role){
+        return (cm.IsRoleAllowedForUser(username,role) && cm.IsTransactionllowedForRole(role,transaction));
     }
 
     private void handleUnauthenticatedCommands(String input){

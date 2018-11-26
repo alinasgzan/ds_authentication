@@ -67,33 +67,33 @@ public class Client {
         try {
             switch (commands[0]) {
                 case ("start"): {
-                    return printService.start(username);
+                    return printService.start(username, commands[1]);
                 }
                 case ("stop"): {
-                    return printService.stop(username);
+                    return printService.stop(username, commands[1]);
                 }
                 case ("print"): {
-                    return printService.print(commands[1], commands[2], username);
+                    return printService.print(commands[1], commands[2], username, commands[3]);
                 }
                 case ("queue"): {
-                    return printService.queue(username);
+                    return printService.queue(username, commands[1]);
                 }
                 case ("top"): {
-                    return printService.topQueue(Integer.valueOf(commands[1]), username);
+                    return printService.topQueue(Integer.valueOf(commands[1]), username, commands[2]);
                 }
                 case ("restart"): {
-                    return printService.restart(username);
+                    return printService.restart(username, commands[1]);
                 }
                 case ("status"): {
-                    return printService.status(username);
+                    return printService.status(username, commands[1]);
                 }
                 case ("setconfig"): {
 
-                    return printService.setConfig(commands[1], commands[2], username);
+                    return printService.setConfig(commands[1], commands[2], username, commands[3]);
 
                 }
                 case ("readconfig"): {
-                    return printService.readConfig(commands[1], username);
+                    return printService.readConfig(commands[1], username, commands[2]);
                 }
                 case ("logout"): {
                     if(printService.logout(username))
