@@ -22,7 +22,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
     private Logger logger = Logger.getLogger("Logger");
 
 
-    private static final String passwordFile = "RMIprintserver/userspas1.txt";
+    private static final String passwordFile = "RMIprintserver/userspas.txt";
 
     public PrintServant() throws RemoteException {
         super();
@@ -63,7 +63,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
             logger.info("operation not allowed for user " + username + ", operation denied");
             return "Operation denied";
         }
-        if (!pm.getIsActive()) {
+        if (pm.getIsActive()) {
             pm.toggleIsActive();
             logger.info("user " + username + " stopped server");
             return "Server stopped";

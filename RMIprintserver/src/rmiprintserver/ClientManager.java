@@ -11,11 +11,14 @@ public class ClientManager {
     private ArrayList<User> clientList;
     private ArrayList<PotentialIntruder> intruderList;
     private HashMap<String, ArrayList<String>> roleTransactions;
+    private HashMap<String, AccessManager.setRelations> setRelationsBetweenRoles;
+
 
     public ClientManager() {
         clientList = new ArrayList<>();
         intruderList = new ArrayList<>();
         roleTransactions = AccessManager.readRoleTransactions();
+        if (AccessManager.checkSetInclusion) setRelationsBetweenRoles = AccessManager.CalcRoleSetRelations();
     }
 
     /**
@@ -125,20 +128,24 @@ public class ClientManager {
 
     public boolean IsRoleAllowedForUser(String username, String role){
         ArrayList<String> rolesForUser = AccessManager.getRolesOfUser(username);
-        System.out.println("Debugging IsRoleAllowedForUser");
-        System.out.println(username);
-        System.out.println(role);
-        System.out.println(Arrays.toString(rolesForUser.toArray()));
 
-        if (rolesForUser.contains(role)) return true;
+        boolean setInclusionDetected = false;
+
+        if (AccessManager.checkSetInclusion){
+            for (int i = 0; i<rolesForUser.size(); i++){
+                if(setRelationsBetweenRoles.get(role+","+rolesForUser.get(i)) == AccessManager.setRelations.Subset ||
+                        setRelationsBetweenRoles.get(rolesForUser.get(i)+","+role) == AccessManager.setRelations.Superset){
+                    setInclusionDetected = true;
+                    break;
+                }
+            }
+        }
+
+        if (rolesForUser.contains(role) || setInclusionDetected) return true;
         return false;
     }
 
     public boolean IsTransactionllowedForRole(String role, String transaction) {
-        System.out.println("Debugging IsTransactionllowedForRole");
-        System.out.println(role);
-        System.out.println(transaction);
-        System.out.println(Arrays.toString(roleTransactions.get(role).toArray()));
         if (roleTransactions.get(role).contains(transaction)) return true;
         return false;
     }
