@@ -15,13 +15,6 @@ public class User {
         username = _username;
     }
 
-    public User(String _ip, String _username, ArrayList<String> _roles) {
-        isActive = false;
-        ip = _ip;
-        username = _username;
-        roles = _roles;
-    }
-
     public String getUsername() {
         return username;
     }
