@@ -1,0 +1,9 @@
+users to roles mapping
+Alice:Administrator
+Cecilia:PowerUser
+David:User
+Erica:User
+Fred:User
+George:User Technician
+Henry:User
+Ida:PowerUser
