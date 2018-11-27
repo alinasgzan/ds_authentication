@@ -28,7 +28,7 @@ public class ClientManager {
      * @param ip
      */
     public void RegisterClient(String username, String ip) {
-        clientList.add(new User(ip, username, AccessManager.getRolesOfUser(username)));
+        clientList.add(new User(ip, username));
 
         UnregisterPotentialIntruder(username, ip);
     }
@@ -133,8 +133,7 @@ public class ClientManager {
 
         if (AccessManager.checkSetInclusion){
             for (int i = 0; i<rolesForUser.size(); i++){
-                if(setRelationsBetweenRoles.get(role+","+rolesForUser.get(i)) == AccessManager.setRelations.Subset ||
-                        setRelationsBetweenRoles.get(rolesForUser.get(i)+","+role) == AccessManager.setRelations.Superset){
+                if(setRelationsBetweenRoles.get(role+","+rolesForUser.get(i)) == AccessManager.setRelations.Subset){
                     setInclusionDetected = true;
                     break;
                 }
