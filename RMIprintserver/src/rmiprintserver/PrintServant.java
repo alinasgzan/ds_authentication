@@ -82,8 +82,10 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
             logger.info("operation not allowed for user " + username + ", operation denied");
             return "Operation denied";
         }
-        if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
-        logger.info("service not started, operation denied");
+        if (!pm.getIsActive()){
+            logger.info("service not started, operation denied");
+            return Constants.NOT_STARTED_MESSAGE;
+        }
 
         try {
             pm.print(filename, Integer.parseInt(printer), username);
