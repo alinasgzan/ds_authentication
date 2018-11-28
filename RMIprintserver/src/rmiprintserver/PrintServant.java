@@ -49,7 +49,7 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
             {
             logger.info("invalid username, operation denied");
             return "Unauthorized";}
-        if (!pm.getIsActive()) {
+        if (pm.getIsActive()) {
             pm.toggleIsActive();
             logger.info("user " + username + " stopped server");
             return "Server stopped";
@@ -65,8 +65,10 @@ public class PrintServant extends UnicastRemoteObject implements IPrintServer {
             return "Unauthorized";
         }
 
-        if (!pm.getIsActive()) return Constants.NOT_STARTED_MESSAGE;
-        logger.info("service not started, operation denied");
+        if (!pm.getIsActive()) {
+            logger.info("service not started, operation denied");
+            return Constants.NOT_STARTED_MESSAGE;
+        }
 
         try {
             pm.print(filename, Integer.parseInt(printer), username);
